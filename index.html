@@ -39,6 +39,10 @@
       type="module"
       src="/src/shared/components/shared/Tabs/tabs.component.ts"
     ></script>
+    <script
+      type="module"
+      src="/src/shared/components/shared/Pagination/pagination.component.ts"
+    ></script>
     <link rel="stylesheet" href="./src/index.css" />
     <style>
       html {
@@ -63,194 +67,34 @@
         --page-template-column: 1fr clamp(0px, 90vw, 1200px) 1fr;
         display: grid;
         grid-template-columns: var(--page-template-column);
-        grid-template-rows: 1fr auto;
         min-height: 100vh;
         min-height: 100dvh;
-        justify-content: center;
-        align-items: center;
-
         padding: 30px 0;
-
+        align-items: center;
         overflow-y: scroll;
         & > * {
           grid-column: 2 / 3;
         }
       }
 
-      .discover-section {
+      main {
         display: grid;
-        row-gap: 20px;
-
-        color: #5d5d5d;
+        row-gap: 60px;
       }
 
-      h2 {
-        color: black;
-        font-size: clamp(2rem, 4vw, 2.5rem);
-      }
-
-      p {
-        line-height: 1.5;
-      }
-
-      sn-tab {
-        margin-top: 20px;
-      }
-
-      .placeholder {
-        --background-color: gray;
-        --border-radius: 10px;
-        animation: pulse 2.5s ease-in-out infinite alternate;
-        display: grid;
-        row-gap: 30px;
-        container-type: inline-size;
-        container-name: tab-panel-container;
-      }
-
-      .tabs {
-        display: flex;
-        column-gap: 30px;
-        position: relative;
-        padding-block: 20px;
-      }
-
-      .tab {
-        background-color: var(--background-color);
-        aspect-ratio: 4 / 1;
-        height: 25px;
-        border-radius: var(--border-radius);
-      }
-
-      .content {
-        display: flex;
-        column-gap: 30px;
-      }
-
-      .img {
-        --flex-basis: 350px;
-        aspect-ratio: 1.2 / 0.8;
-        flex-basis: var(--flex-basis);
-        flex-shrink: 0;
-        flex-grow: 0;
-        background-color: var(--background-color);
-        border-radius: var(--border-radius);
-      }
-
-      .info {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        width: 100%;
-      }
-
-      .title {
-        width: 20ch;
-        height: 25px;
-        background-color: var(--background-color);
-        border-radius: var(--border-radius);
-      }
-
-      .para {
-        width: 100%;
-        height: 65px;
-        background-color: var(--background-color);
-        border-radius: var(--border-radius);
-      }
-
-      .lists {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 25px;
-        max-width: 650px;
-
-        margin-top: auto;
-      }
-
-      .list {
-        aspect-ratio: 5 / 1;
-        height: 30px;
-        background-color: var(--background-color);
-        border-radius: var(--border-radius);
-      }
-
-      @container tab-panel-container (max-width: 860px) {
-        .content {
-          flex-wrap: wrap;
-          column-gap: 0;
-          row-gap: 30px;
-        }
-
-        .lists {
-          margin-top: 20px;
-        }
-
-        .img {
-          --flex-basis: 100%;
-        }
-      }
-
-      @container tab-panel-container (max-width: 500px) {
-        .lists {
-          grid-template-columns: 1fr;
-        }
-      }
-
-      @media (max-width: 400px) {
-        .tabs {
-          overflow-x: auto;
-          scroll-behavior: smooth;
-          scroll-snap-align: center;
-          scroll-snap-type: x proximity;
-          &::-webkit-scrollbar {
-            appearance: none;
-          }
-        }
-      }
-
-      @keyframes pulse {
-        from {
-          opacity: 0.5;
-        }
-
-        to {
-          opacity: 0.7;
+      @media (max-width: 450px) {
+        sn-pagination:nth-of-type(4) {
+          display: none;
         }
       }
     </style>
   </head>
   <body>
-    <section class="discover-section">
-      <h2>Discover timeless elegance</h2>
-      <p>
-        Step into a world where quality meets quintessential charm with our
-        collection. Every thread weaves a promise of unparalleled quality,
-        ensuring that each garment is not just a part of your wardrobe, but a
-        piece of art. Here's the essence of what makes our apparel the hallmark
-        for those with an eye for excellence and a heart for the environment.
-      </p>
-      <sn-tab>
-        <div class="placeholder">
-          <div class="tabs">
-            <div class="tab"></div>
-            <div class="tab"></div>
-            <div class="tab"></div>
-            <div class="tab"></div>
-          </div>
-          <div class="content">
-            <div class="img"></div>
-            <div class="info">
-              <div class="title"></div>
-              <div class="para"></div>
-              <div class="lists">
-                <div class="list"></div>
-                <div class="list"></div>
-                <div class="list"></div>
-                <div class="list"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </sn-tab>
-    </section>
+    <main>
+      <sn-pagination totalNumber="30"></sn-pagination>
+      <sn-pagination totalNumber="30" iconOnly></sn-pagination>
+      <sn-pagination></sn-pagination>
+      <sn-pagination currentPageNumber="5"></sn-pagination>
+    </main>
   </body>
 </html>
