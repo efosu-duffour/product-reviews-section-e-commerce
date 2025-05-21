@@ -244,12 +244,12 @@ export class SNPagination extends LitElement {
     );
   }
 
-  private _moveToNextPage = (event: MouseEvent): void => {
+  private _moveToNextPage = (): void => {
     this.currentPageNumber = this._movePage(1);
     this._dispatchPageChangedEvent(this.currentPageNumber);
   };
 
-  private _moveToPreviousPage = (event: MouseEvent): void => {
+  private _moveToPreviousPage = (): void => {
     this.currentPageNumber = this._movePage(-1);
     this._dispatchPageChangedEvent(this.currentPageNumber);
   };
@@ -263,7 +263,7 @@ export class SNPagination extends LitElement {
     return newPageNumber;
   }
 
-  private _forwardPage = (event: MouseEvent): void => {
+  private _forwardPage = (): void => {
     const midOffset = Math.trunc(
       (this.lastPageNumber - this.currentPageNumber) / 2
     );
@@ -271,7 +271,7 @@ export class SNPagination extends LitElement {
     this._dispatchPageChangedEvent(this.currentPageNumber);
   };
 
-  private _backwardPage = (event: MouseEvent): void => {
+  private _backwardPage = (): void => {
     const midOffset = Math.trunc(
       (this.firstPageNumber - this.currentPageNumber) / 2
     );
@@ -279,7 +279,7 @@ export class SNPagination extends LitElement {
     this._dispatchPageChangedEvent(this.currentPageNumber);
   };
 
-  private _selectPage = (event: MouseEvent, page: number): void => {
+  private _selectPage = (page: number): void => {
     this.currentPageNumber = page;
     this._dispatchPageChangedEvent(this.currentPageNumber);
   };
@@ -334,8 +334,8 @@ export class SNPagination extends LitElement {
           last: this._isLastPage(page),
           sibling: this._isSiblingPage(page),
         })}
-        @click=${(ev: MouseEvent) => {
-          this._selectPage(ev, page);
+        @click=${() => {
+          this._selectPage(page);
         }}
         aria-label=${`Go to Page ${page}`}
         aria-current=${this._isCurrentPage(page) ? "page" : false}
