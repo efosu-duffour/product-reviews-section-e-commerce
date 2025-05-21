@@ -5,13 +5,7 @@ import {
   ProductsService,
 } from "../../../../services/products.service";
 import { consume } from "@lit/context";
-import {
-  inventoriesServiceContext,
-  PaginationNumberContext,
-  productImageServiceContext,
-  productServiceContext,
-} from "../../latest-arrivals/latest-arrivals.component";
-import { repeat } from "lit/directives/repeat.js";
+
 import {
   ProductFirstImageWithColor,
   ProductImagesService,
@@ -20,6 +14,9 @@ import { InventoryService } from "../../../../services/inventory.service";
 import { Task } from "@lit/task";
 import { ProductCardItem, shareableStyle } from "./product-card.component";
 import { range } from "../../../utils/range";
+import "../Product/product-card.component";
+import { repeat } from "lit/directives/repeat.js";
+import { inventoriesServiceContext, PaginationNumberContext, productImageServiceContext, productServiceContext } from "../../../../services/context";
 
 @customElement("sn-product-list")
 export class SNProductList extends LitElement {
@@ -95,7 +92,7 @@ export class SNProductList extends LitElement {
   @consume({ subscribe: true, context: PaginationNumberContext })
   private _paginationNumber!: number;
 
-  @property({ attribute: false })
+  @property({ type: Array })
   product_ids?: ProductID[];
 
   @consume({ context: productImageServiceContext })
@@ -106,17 +103,6 @@ export class SNProductList extends LitElement {
 
   @consume({ context: productServiceContext })
   private _productService?: ProductsService;
-
-  private _productsTask = new Task(this, {
-    task: async ([product_ids]) => {
-      await Promise.all([
-        this._inventoriesService?.init(),
-        this._productImageService?.init(),
-      ]);
-      return this._createProductItems(product_ids ?? []);
-    },
-    args: () => [this.product_ids],
-  });
 
   private _productCardSkeleton() {
     return html`
@@ -132,9 +118,10 @@ export class SNProductList extends LitElement {
     `;
   }
 
-  private _createProductItems(product_ids: ProductID[]): ProductCardItem[] {
+  private _createProductItems = (
+    product_ids: ProductID[]
+  ): ProductCardItem[] => {
     const productItems: ProductCardItem[] = [];
-
     for (let i = 0; i < product_ids.length; i++) {
       const productItem = {} as ProductCardItem;
       const productId = product_ids[i];
@@ -161,14 +148,23 @@ export class SNProductList extends LitElement {
 
       productItems.push(productItem);
     }
+
     return productItems;
-  }
+  };
+
+  private _productsTask = new Task(this, {
+    task: async ([product_ids]) => {
+      return this._createProductItems(product_ids!);
+    },
+    args: () => [this.product_ids],
+  });
 
   protected render() {
     return html`
       <div class="product-list-container">
         ${this._productsTask.render({
-          complete: (productItems) => {
+          complete: (productIDs) => {
+            const productItems = productIDs;
             return repeat(
               productItems,
               (productItem) => productItem.product_id,
@@ -179,10 +175,20 @@ export class SNProductList extends LitElement {
                 ></sn-product-card>`
             );
           },
-          pending: () =>
-            range(this._paginationNumber).map(
-              () => html` ${this._productCardSkeleton()} `
-            ),
+          initial: () => {
+             return html`${range(this._paginationNumber).map((_) =>
+            {
+              return this._productCardSkeleton();
+            }
+            )}`
+          },
+          pending: () => {
+             return html`${range(this._paginationNumber).map((_) =>
+            {
+              return this._productCardSkeleton();
+            }
+            )}`
+          },
         })}
       </div>
     `;

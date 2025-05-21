@@ -9,6 +9,9 @@ import { classMap } from "lit/directives/class-map.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { getFilePathWithoutExtension } from "../../../utils/getFilePathWithoutExt";
 import { resolveUrl } from "../../../directives/resolve-url.directive";
+import "../Galleries/gallery-slider.component";
+import "../Galleries/image.component";
+import "../Links/base-link/base-link.component"
 
 export type ProductCardItem = {
   product_id: ProductID;

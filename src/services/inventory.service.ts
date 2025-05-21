@@ -1,3 +1,4 @@
+import { Collection } from "./collections.service";
 import { ProductID } from "./products.service";
 
 export type SKU = string;
@@ -191,7 +192,22 @@ export class InventoryService {
     return InventoryService.getListPriceByID(this.inventories, product_id);
   }
 
-  
+  static getAllColors(inventories: Inventory[]): ProductColor[] {
+    // Get the available colors in the inventory
+    const colors = new Set<ProductColor>();
+    for (let i = 0; i < inventories.length; i++) {
+      if (colors.has(inventories[i].color)) continue;
+      colors.add(inventories[i].color);
+    }
+
+    return [...colors];
+  }
+
+  getAllColors(): ProductColor[] {
+    // Get the available colors in the inventory
+
+    return InventoryService.getAllColors(this.inventories);
+  }
 
   private static _INSTANCE: InventoryService | null = null;
 }

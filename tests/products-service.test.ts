@@ -1,7 +1,13 @@
 import { http, HttpResponse } from "msw";
 import { setupServer } from "msw/node";
 import { afterAll, beforeAll, describe, afterEach, it, expect } from "vitest";
-import { CreatedAt, Product, ProductName, ProductsService } from "../src/services/products.service";
+import {
+  CreatedAt,
+  Product,
+  ProductID,
+  ProductName,
+  ProductsService,
+} from "../src/services/products.service";
 
 const mockProducts: Product[] = [
   {
@@ -68,6 +74,19 @@ describe("Products Service", () => {
     expect(productsService_1.createdAt).toEqual(productsService_2.createdAt);
   });
 
+  it("should get all product ids", async () => {
+    const productService = new ProductsService();
+    await productService.init();
+    const productIDs: ProductID[] = productService.getAllIDs();
+    expect(productIDs).toEqual([
+      "urban-drift-bucket-hat",
+      "tangerine-mini-tote",
+      "elemental-sneakers",
+      "metro-hoodie",
+    ])
+
+  });
+
   it("should fetch the right inventories", async () => {
     const productsService = new ProductsService();
     let products: Product[] = productsService.products;
@@ -123,36 +142,32 @@ describe("Products Service", () => {
     ]);
   });
 
-  it('should get the products ID by the specified collection', async () => {
+  it("should get the products ID by the specified collection", async () => {
     const productService = new ProductsService();
     await productService.init();
 
-    const urbanProductIDs = productService.getIDsByCollection('urban');
-    expect(urbanProductIDs).toEqual([
-      "urban-drift-bucket-hat",
-      "metro-hoodie",
-    ])
+    const urbanProductIDs = productService.getIDsByCollection("urban");
+    expect(urbanProductIDs).toEqual(["urban-drift-bucket-hat", "metro-hoodie"]);
   });
 
-  it('should get the products ID by the specified category', async () => {
+  it("should get the products ID by the specified category", async () => {
     const productService = new ProductsService();
     await productService.init();
 
-    const womenProductIDs = productService.getIDsByCategory('women');
-    expect(womenProductIDs).toEqual([
-      "tangerine-mini-tote",
-    ])
+    const womenProductIDs = productService.getIDsByCategory("women");
+    expect(womenProductIDs).toEqual(["tangerine-mini-tote"]);
   });
 
-  it('should get the products by the specified date predicate', async () => {
+  it("should get the products by the specified date predicate", async () => {
     const productService = new ProductsService();
     await productService.init();
 
     const march_2024 = (createdAt: CreatedAt) => {
       const date = new Date(createdAt);
-      return (date.getMonth() === 2 && date.getFullYear() === 2024);
-    }
-    const march_2024Products = productService.getProductsByCreatedAt(march_2024);
+      return date.getMonth() === 2 && date.getFullYear() === 2024;
+    };
+    const march_2024Products =
+      productService.getProductsByCreatedAt(march_2024);
     expect(march_2024Products).toEqual([
       {
         product_id: "elemental-sneakers",
@@ -172,29 +187,26 @@ describe("Products Service", () => {
         collection: "urban",
         created_at: "2024-03-23",
       },
-    ])
+    ]);
   });
 
-  it('should get the product id of the specified time', async() => {
+  it("should get the product id of the specified time", async () => {
     const productService = new ProductsService();
     await productService.init();
 
     const march_2024 = (createdAt: CreatedAt) => {
       const date = new Date(createdAt);
-      return (date.getMonth() === 2 && date.getFullYear() === 2024);
-    }
+      return date.getMonth() === 2 && date.getFullYear() === 2024;
+    };
     const march_2024Products = productService.getIDsByCreatedAt(march_2024);
-    expect(march_2024Products).toEqual([
-        "elemental-sneakers",
-        "metro-hoodie",
-    ])
+    expect(march_2024Products).toEqual(["elemental-sneakers", "metro-hoodie"]);
   });
 
-  it('should get the product name of the product id', async () => {
-      const productService = new ProductsService();
-        await productService.init();
+  it("should get the product name of the product id", async () => {
+    const productService = new ProductsService();
+    await productService.init();
 
-        const name: ProductName = productService.getNameByID('metro-hoodie');
-        expect(name).toEqual('Metro Hoodie')
-    })
+    const name: ProductName = productService.getNameByID("metro-hoodie");
+    expect(name).toEqual("Metro Hoodie");
+  });
 });

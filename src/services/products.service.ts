@@ -1,3 +1,6 @@
+import { C } from "vitest/dist/chunks/reporters.d.79o4mouw.js";
+import { Inventory } from "./inventory.service";
+
 export type Category = string;
 export type ProductName = string;
 export type ProductID = string;
@@ -175,5 +178,48 @@ export class ProductsService {
   getNameByID(product_id: ProductID): ProductName {
     // Get the product name from the product id
     return ProductsService.getNameByID(this.products, product_id);
+  }
+
+  static getAllIDs(products: Product[]): ProductID[] {
+    // Get all the available product IDs
+
+    return products.map(product => product.product_id);
+  }
+
+  getAllIDs(): ProductID[] {
+    // Get all the available product IDs
+
+    return ProductsService.getAllIDs(this.products);
+  }
+
+  static getAllCollections(products: Product[]): Collection[] {
+    // get all the collections available in the products
+    const collections = new Set<Collection>();
+
+    for (let i = 0; i < products.length; i++) {
+      if (collections.has(products[i].collection)) continue;
+      collections.add(products[i].collection);
+    }
+
+    return [...collections];
+  }
+  getAllCollections(): Collection[] {
+    return ProductsService.getAllCollections(this.products);
+  }
+
+  static getAllCategories(products: Product[]): Category[] {
+    // Get all categories available in the product
+    const categories = new Set<Category>();
+
+    for (let i = 0; i < products.length; i++) {
+      if (categories.has(products[i].category)) continue;
+      categories.add(products[i].category);
+    }
+
+    return [...categories];
+  }
+
+  getAllCategories(): Category[] {
+    return ProductsService.getAllCategories(this.products);
   }
 }
