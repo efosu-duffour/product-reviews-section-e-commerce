@@ -127,7 +127,7 @@
   {
     "product_id": "color-ease-tee",
     "color": "pink",
-    "image_url": "/images/color-ease-tee-1.jpg"
+    "image_url": "/images/color-ease-tee.webp"
   },
   {
     "product_id": "cool-neo-retro-shoes",
@@ -137,6 +137,11 @@
   {
     "product_id": "cute-banana-socks",
     "color": "white",
+    "image_url": "/images/cute-banana-socks-1.webp"
+  },
+  {
+    "product_id": "cute-banana-socks",
+    "color": "pink",
     "image_url": "/images/cute-banana-socks-1.webp"
   },
   {

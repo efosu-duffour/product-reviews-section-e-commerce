@@ -50,7 +50,7 @@ export class ProductsService {
       sessionStorage.setItem(SESSIONNAME, JSON.stringify(products));
     }
 
-    return this._products = products;
+    return (this._products = products);
   }
 
   private async _fetchProducts(): Promise<Product[]> {
@@ -104,7 +104,24 @@ export class ProductsService {
 
   getIDsByCollection(collection: Collection): ProductID[] {
     // Get the products ID with the specified collection
+    if (collection === "latest") {
+      return this._getlatestArrivalIDs(this.products);
+    }
+
     return ProductsService.getIDsByCollection(this.products, collection);
+  }
+
+  private _getlatestArrivalIDs(products: Product[]): ProductID[] {
+    const marchAndBeyond = (createdAt: CreatedAt) => {
+      const date = new Date(createdAt);
+      return date.getFullYear() === 2024 && date.getMonth() >= 2;
+    };
+    const productIDs = ProductsService.getIDsByCreatedAt(
+      products,
+      marchAndBeyond
+    );
+
+    return productIDs;
   }
 
   static getProductsByCreatedAt(
@@ -122,7 +139,10 @@ export class ProductsService {
     return ProductsService.getProductsByCreatedAt(this.products, predicate);
   }
 
-  static getIDsByCreatedAt(products: Product[], predicate: (createdAt: CreatedAt) => boolean): ProductID[] {
+  static getIDsByCreatedAt(
+    products: Product[],
+    predicate: (createdAt: CreatedAt) => boolean
+  ): ProductID[] {
     // Get the product id satisfying the predicate
     const productIDs: ProductID[] = [];
 
@@ -135,7 +155,7 @@ export class ProductsService {
 
   getIDsByCreatedAt(predicate: (createdAt: CreatedAt) => boolean): ProductID[] {
     // Get the product id satisfying the predicate
-    return ProductsService.getIDsByCreatedAt(this.products, predicate)
+    return ProductsService.getIDsByCreatedAt(this.products, predicate);
   }
 
   static getProductsByCategory(
@@ -164,7 +184,7 @@ export class ProductsService {
 
   static getNameByID(products: Product[], product_id: ProductID): ProductName {
     // Get the product name from the product id
-    let name: ProductName = '';
+    let name: ProductName = "";
     for (let i = 0; i < products.length; i++) {
       if (products[i].product_id !== product_id) continue;
       else {
@@ -183,7 +203,7 @@ export class ProductsService {
   static getAllIDs(products: Product[]): ProductID[] {
     // Get all the available product IDs
 
-    return products.map(product => product.product_id);
+    return products.map((product) => product.product_id);
   }
 
   getAllIDs(): ProductID[] {
@@ -221,5 +241,16 @@ export class ProductsService {
 
   getAllCategories(): Category[] {
     return ProductsService.getAllCategories(this.products);
+  }
+
+  static getDateByID(products: Product[], productID: ProductID): Date {
+    // Get the date created of the product
+    return new Date(
+      products.find((product) => product.product_id === productID)!.created_at
+    );
+  }
+
+  getDateByID(productID: ProductID): Date {
+    return ProductsService.getDateByID(this.products, productID);
   }
 }

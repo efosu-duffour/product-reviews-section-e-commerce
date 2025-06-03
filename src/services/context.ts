@@ -2,6 +2,7 @@ import { createContext } from "@lit/context";
 import { ProductImage } from "./product-images.service";
 import { InventoryService } from "./inventory.service";
 import { ProductsService } from "./products.service";
+import { ReviewsService } from "./reviews.service";
 
 export const productImageServiceContext = createContext<ProductImage>(
   Symbol("productImageService")
@@ -14,4 +15,7 @@ export const productServiceContext = createContext<ProductsService>(
 );
 export const PaginationNumberContext = createContext<number>(
   Symbol("paginationNumber")
+);
+export const ReviewsServiceContext = createContext<ReviewsService>(
+  Symbol("reviewService")
 );

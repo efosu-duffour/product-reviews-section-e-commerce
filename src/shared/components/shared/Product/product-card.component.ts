@@ -22,7 +22,7 @@ export type ProductCardItem = {
   list_price: string;
 };
 
-export const shareableStyle = css`
+const _shareableStyle = css`
   * {
     padding: 0;
     margin: 0;
@@ -32,7 +32,6 @@ export const shareableStyle = css`
   .product-card-container {
     display: grid;
     row-gap: 5px;
-    padding: clamp(5px, 6%, 15px);
     border-radius: 12px;
   }
 
@@ -67,8 +66,73 @@ export const shareableStyle = css`
 
 @customElement("sn-product-card")
 export class SNProductCard extends LitElement {
+  
+
+  static productCardSkeletonStyle = [
+    _shareableStyle,
+    
+    css`
+   
+    .name,
+      .color,
+      .price-container {
+        height: 16px;
+      }
+
+      .name {
+        height: 20px;
+        width: 200px;
+      }
+
+      .color {
+        width: 100px;
+      }
+
+      .price-container {
+        width: 150px;
+      }
+
+      .product-card-container {
+        --animation-delay: 0;
+
+        animation-name: pulse;
+        animation-duration: 1s;
+        animation-iteration-count: infinite;
+        animation-delay: var(--animation-delay);
+        animation-direction: alternate;
+        opacity: 0.45;
+
+        * {
+          border-radius: 5px;
+          background-color: gray;
+        }
+
+        &:nth-of-type(n + 1) {
+          --animation-delay: 500ms;
+        }
+
+        &:nth-of-type(n + 2) {
+          --animation-delay: 700ms;
+        }
+
+        &:nth-of-type(n + 3) {
+          --animation-delay: 900ms;
+        }
+      }
+
+      @keyframes pulse {
+        from {
+          opacity: 0.4;
+        }
+
+        to {
+          opacity: 0.6;
+        }
+      }
+    `
+  ]
   static styles = [
-    shareableStyle,
+    _shareableStyle,
 
     css`
       .product-card-container {
@@ -76,6 +140,7 @@ export class SNProductCard extends LitElement {
         color: #797979;
         position: relative;
         outline: 2px solid transparent;
+        outline-offset: 0px;
         will-change: outline;
 
         &:has(fieldset:focus-within) {
@@ -94,6 +159,11 @@ export class SNProductCard extends LitElement {
 
       .product-card-container:focus-within {
         outline: 2px solid black;
+        outline-offset: 8px;
+      }
+
+      .product-card-container:active {
+        outline: none;
       }
 
       .product-card-container:hover sn-img::part(img-container),
@@ -229,6 +299,20 @@ export class SNProductCard extends LitElement {
 
   @queryAll("input[name='color']")
   private _colorInputs?: NodeListOf<HTMLInputElement>;
+
+  static productCardSkeleton() {
+    return html`
+      <div class="product-card-container">
+        <div class="gallery"></div>
+        <div class="color"></div>
+        <div class="name"></div>
+        <div class="price-container"></div>
+        <div class="colors-container">
+          <div class="color-swatch"></div>
+        </div>
+      </div>
+    `;
+  }
 
   protected firstUpdated(): void {
     this._colorInputs?.forEach((colorInput) => {
