@@ -1,5 +1,5 @@
 import { defineConfig } from "vite";
 
 export default defineConfig({
-    base: '/pagination-component/'
+    base: '/all-product-secton-e-commerce/'
 })      

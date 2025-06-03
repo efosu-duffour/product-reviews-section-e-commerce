@@ -1,6 +1,5 @@
-import { createContext, provide } from "@lit/context";
+import {provide } from "@lit/context";
 import {
-  ProductImage,
   ProductImagesService,
 } from "../../../services/product-images.service";
 import { InventoryService } from "../../../services/inventory.service";
@@ -8,19 +7,8 @@ import { ProductID, ProductsService } from "../../../services/products.service";
 import { customElement, state } from "lit/decorators.js";
 import { css, html, LitElement } from "lit";
 import { CreatedAt } from "../../../services/collections.service";
+import { inventoriesServiceContext, PaginationNumberContext, productImageServiceContext, productServiceContext } from "../../../services/context";
 
-export const productImageServiceContext = createContext<ProductImage>(
-  Symbol("productImageService")
-);
-export const inventoriesServiceContext = createContext<InventoryService>(
-  Symbol("inventoriesService")
-);
-export const productServiceContext = createContext<ProductsService>(
-  Symbol("productService")
-);
-export const PaginationNumberContext = createContext<number>(
-  Symbol("paginationNumber")
-);
 
 @customElement("sn-latest-arrival")
 export class SNLatestArrival extends LitElement {

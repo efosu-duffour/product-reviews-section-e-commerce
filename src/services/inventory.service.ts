@@ -1,3 +1,4 @@
+import { Collection } from "./collections.service";
 import { ProductID } from "./products.service";
 
 export type SKU = string;
@@ -49,7 +50,7 @@ export class InventoryService {
       sessionStorage.setItem(SESSIONNAME, JSON.stringify(inventories));
     }
 
-    return this._inventories = inventories;
+    return (this._inventories = inventories);
   }
 
   private async _fetchInventories(): Promise<Inventory[]> {
@@ -93,7 +94,10 @@ export class InventoryService {
 
   getInventoriesByColor(color: ProductID): Inventory[] {
     // Get the inventories according to the color
-    return InventoryService.getInventoriesByColor(this._inventories ?? [], color);
+    return InventoryService.getInventoriesByColor(
+      this._inventories ?? [],
+      color
+    );
   }
 
   static getSizes(inventories: Inventory[]): Size[] {
@@ -131,7 +135,10 @@ export class InventoryService {
     return InventoryService.getSizesByColor(this._inventories ?? [], color);
   }
 
-  static getColorsByID(inventories: Inventory[], product_id: ProductID): ProductColor[] {
+  static getColorsByID(
+    inventories: Inventory[],
+    product_id: ProductID
+  ): ProductColor[] {
     // Get the distinct colors of the product id
     const colors: Set<ProductColor> = new Set();
 
@@ -141,7 +148,7 @@ export class InventoryService {
 
       colors.add(product.color);
     }
-    return [...colors] ;
+    return [...colors];
   }
 
   getColorsByID(product_id: ProductID): ProductColor[] {
@@ -149,18 +156,20 @@ export class InventoryService {
     return InventoryService.getColorsByID(this.inventories, product_id);
   }
 
-  static getSalePriceByID(inventories: Inventory[], product_id: ProductID): Price  {
+  static getSalePriceByID(
+    inventories: Inventory[],
+    product_id: ProductID
+  ): Price {
     // Get the first sale price by the product id
 
     let price: Price = 0;
     for (let i = 0; i < inventories.length; i++) {
       const product = inventories[i];
       if (product.product_id !== product_id) continue;
-      else
-        {
-          price = product.sale_price;
-          break;
-        }
+      else {
+        price = product.sale_price;
+        break;
+      }
     }
     return price;
   }
@@ -170,28 +179,97 @@ export class InventoryService {
     return InventoryService.getSalePriceByID(this.inventories, product_id);
   }
 
-  static getListPriceByID(inventories: Inventory[], product_id: ProductID): Price  {
+  static getListPriceByID(
+    inventories: Inventory[],
+    product_id: ProductID
+  ): Price {
     // Get the first list price by the product id
     let price: Price = 0;
     for (let i = 0; i < inventories.length; i++) {
       const product = inventories[i];
       if (product.product_id !== product_id) continue;
-      else
-        {
-          price = product.list_price;
-          break;
-        }
+      else {
+        price = product.list_price;
+        break;
+      }
     }
     return price;
   }
 
   getListPriceByID(product_id: ProductID): Price {
     // Get the first list price by the product id
-    
+
     return InventoryService.getListPriceByID(this.inventories, product_id);
   }
 
-  
+  static getAllColors(inventories: Inventory[]): ProductColor[] {
+    // Get the available colors in the inventory
+    const colors = new Set<ProductColor>();
+    for (let i = 0; i < inventories.length; i++) {
+      if (colors.has(inventories[i].color)) continue;
+      colors.add(inventories[i].color);
+    }
+
+    return [...colors];
+  }
+
+  getAllColors(): ProductColor[] {
+    // Get the available colors in the inventory
+
+    return InventoryService.getAllColors(this.inventories);
+  }
+
+  static getIDsByColor(
+    inventories: Inventory[],
+    color: ProductColor
+  ): ProductID[] {
+    // Get the available ids by the specified color
+    const productIDs = new Set<ProductID>();
+    for (let i = 0; i < inventories.length; i++) {
+      if (color !== inventories[i].color) continue;
+
+      productIDs.add(inventories[i].product_id);
+    }
+    return [...productIDs];
+  }
+
+  getIDsByColor(color: ProductColor): ProductID[] {
+    return InventoryService.getIDsByColor(this.inventories, color);
+  }
+
+  static getLowestPriceByID(
+    inventories: Inventory[],
+    productID: ProductID
+  ): number {
+    // Get the least price of the specified product
+
+    return Math.min(
+      ...inventories
+        .filter((inventory) => inventory.product_id === productID)
+        .map((filteredInventory) => filteredInventory.sale_price)
+    );
+  }
+
+  getLowestPriceByID(productID: ProductID): number {
+    return InventoryService.getLowestPriceByID(this.inventories, productID);
+  }
+
+  static getHighestPriceByID(
+    inventories: Inventory[],
+    productID: ProductID
+  ): number {
+    // Get the least price of the specified product
+
+    return Math.max(
+      ...inventories
+        .filter((inventory) => inventory.product_id === productID)
+        .map((filteredInventory) => filteredInventory.sale_price)
+    );
+  }
+
+  getHighestPriceByID(productID: ProductID): number {
+    return InventoryService.getHighestPriceByID(this.inventories, productID);
+  }
 
   private static _INSTANCE: InventoryService | null = null;
 }

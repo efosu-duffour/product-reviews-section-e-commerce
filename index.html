@@ -10,39 +10,7 @@
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <script type="module" src="/src/shared/scripts/fonts.scripts.ts"></script>
-    <script
-      type="module"
-      src="/src/shared/components/shared/Links/base-link/base-link.component.ts"
-    ></script>
-    <script
-      type="module"
-      src="/src/shared/components/shared/Galleries/image.component.ts"
-    ></script>
-    <script
-      type="module"
-      src="/src/shared/components/shared/Product/product-card.component.ts"
-    ></script>
-    <script
-      type="module"
-      src="/src/shared/components/shared/Product/product-list.component.ts"
-    ></script>
-    <script
-      type="module"
-      src="/src/shared/components/shared/Galleries/gallery-slider.component.ts"
-    ></script>
-    <script
-      type="module"
-      src="/src/shared/components/latest-arrivals/latest-arrivals.component.ts"
-    ></script>
-    <script
-      type="module"
-      src="/src/shared/components/shared/Tabs/tabs.component.ts"
-    ></script>
-    <script
-      type="module"
-      src="/src/shared/components/shared/Pagination/pagination.component.ts"
-    ></script>
+    <script type="module" src="/src/shared/components/all-products/all-products.page.component.ts"></script>
     <link rel="stylesheet" href="./src/index.css" />
     <style>
       html {
@@ -64,7 +32,7 @@
       body {
         font-family: "Noto Sans", "Noto Sans Fallback", system-ui, -apple-system,
           BlinkMacSystemFont;
-        --page-template-column: 1fr clamp(0px, 90vw, 1200px) 1fr;
+        --page-template-column: 1fr clamp(0px, 90vw, 1300px) 1fr;
         display: grid;
         grid-template-columns: var(--page-template-column);
         min-height: 100vh;
@@ -76,25 +44,9 @@
           grid-column: 2 / 3;
         }
       }
-
-      main {
-        display: grid;
-        row-gap: 60px;
-      }
-
-      @media (max-width: 450px) {
-        sn-pagination:nth-of-type(4) {
-          display: none;
-        }
-      }
     </style>
   </head>
   <body>
-    <main>
-      <sn-pagination totalNumber="30"></sn-pagination>
-      <sn-pagination totalNumber="30" iconOnly></sn-pagination>
-      <sn-pagination></sn-pagination>
-      <sn-pagination currentPageNumber="5"></sn-pagination>
-    </main>
+    <sn-all-products></sn-all-products>
   </body>
 </html>
