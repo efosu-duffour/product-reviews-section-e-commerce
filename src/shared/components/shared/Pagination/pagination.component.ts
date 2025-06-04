@@ -1,5 +1,5 @@
 import { css, html, LitElement, unsafeCSS } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { range } from "../../../utils/range";
 import { classMap } from "lit/directives/class-map.js";
 import arrowLeftDoubleImage from '/arrow-left-double-line.svg';
@@ -182,8 +182,8 @@ export class SNPagination extends LitElement {
   @property({ type: Number })
   numberOnEachPage = 10;
 
-  @property({type: Number})
-  currentPageNumber = 1;
+  @state()
+  private _currentPageNumber = 1;
 
   @property({ type: Boolean })
   iconOnly = false;
@@ -212,7 +212,7 @@ export class SNPagination extends LitElement {
   }
 
   private _isCurrentPage(page: number): boolean {
-    return page === this.currentPageNumber;
+    return page === this._currentPageNumber;
   }
 
   private _isSiblingPage(page: number): boolean {
@@ -224,7 +224,7 @@ export class SNPagination extends LitElement {
       return false;
 
     // It checks if the page number is within the range of siblings region.
-    const siblingRegion = Math.abs(page - this.currentPageNumber);
+    const siblingRegion = Math.abs(page - this._currentPageNumber);
     return siblingRegion >= 0 && siblingRegion <= this.numberOfSiblings;
   }
 
@@ -232,7 +232,7 @@ export class SNPagination extends LitElement {
     return (
       this._isSiblingPage(page) &&
       !this._isFirstPage(page - 1) &&
-      page - this.currentPageNumber === -this.numberOfSiblings
+      page - this._currentPageNumber === -this.numberOfSiblings
     );
   }
 
@@ -240,22 +240,22 @@ export class SNPagination extends LitElement {
     return (
       this._isSiblingPage(page) &&
       !this._isLastPage(page + 1) &&
-      page - this.currentPageNumber === this.numberOfSiblings
+      page - this._currentPageNumber === this.numberOfSiblings
     );
   }
 
   private _moveToNextPage = (): void => {
-    this.currentPageNumber = this._movePage(1);
-    this._dispatchPageChangedEvent(this.currentPageNumber);
+    this._currentPageNumber = this._movePage(1);
+    this._dispatchPageChangedEvent(this._currentPageNumber);
   };
 
   private _moveToPreviousPage = (): void => {
-    this.currentPageNumber = this._movePage(-1);
-    this._dispatchPageChangedEvent(this.currentPageNumber);
+    this._currentPageNumber = this._movePage(-1);
+    this._dispatchPageChangedEvent(this._currentPageNumber);
   };
 
   private _movePage(offset: number): number {
-    const newPageNumber = this.currentPageNumber + offset;
+    const newPageNumber = this._currentPageNumber + offset;
     if (newPageNumber < this.firstPageNumber) return this.firstPageNumber;
 
     if (newPageNumber > this.lastPageNumber) return this.lastPageNumber;
@@ -265,23 +265,23 @@ export class SNPagination extends LitElement {
 
   private _forwardPage = (): void => {
     const midOffset = Math.trunc(
-      (this.lastPageNumber - this.currentPageNumber) / 2
+      (this.lastPageNumber - this._currentPageNumber) / 2
     );
-    this.currentPageNumber = this._movePage(midOffset);
-    this._dispatchPageChangedEvent(this.currentPageNumber);
+    this._currentPageNumber = this._movePage(midOffset);
+    this._dispatchPageChangedEvent(this._currentPageNumber);
   };
 
   private _backwardPage = (): void => {
     const midOffset = Math.trunc(
-      (this.firstPageNumber - this.currentPageNumber) / 2
+      (this.firstPageNumber - this._currentPageNumber) / 2
     );
-    this.currentPageNumber = this._movePage(midOffset);
-    this._dispatchPageChangedEvent(this.currentPageNumber);
+    this._currentPageNumber = this._movePage(midOffset);
+    this._dispatchPageChangedEvent(this._currentPageNumber);
   };
 
   private _selectPage = (page: number): void => {
-    this.currentPageNumber = page;
-    this._dispatchPageChangedEvent(this.currentPageNumber);
+    this._currentPageNumber = page;
+    this._dispatchPageChangedEvent(this._currentPageNumber);
   };
 
   private _dispatchPageChangedEvent(currentPage: number): void {
@@ -351,7 +351,7 @@ export class SNPagination extends LitElement {
       <nav aria-label="Pagination Navigation">
         <button
           class="page-nav"
-          ?disabled=${this._isFirstPage(this.currentPageNumber)}
+          ?disabled=${this._isFirstPage(this._currentPageNumber)}
           type="button"
           aria-label="Previous page"
           @click=${this._moveToPreviousPage}
@@ -376,7 +376,7 @@ export class SNPagination extends LitElement {
         </div>
         <button
           class="page-nav"
-          ?disabled=${this._isLastPage(this.currentPageNumber)}
+          ?disabled=${this._isLastPage(this._currentPageNumber)}
           type="button"
           aria-label="Next Page"
           @click=${this._moveToNextPage}

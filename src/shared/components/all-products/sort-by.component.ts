@@ -99,7 +99,7 @@ export class SNSortBy extends LitElement {
         background-color: blue;
         border-radius: 100%;
         position: absolute;
-        top: -4px;
+        top: 0px;
         right: 0px;
         opacity: 0;
 

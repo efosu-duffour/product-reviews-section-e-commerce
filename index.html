@@ -10,11 +10,14 @@
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <script type="module" src="/src/shared/components/all-products/all-products.page.component.ts"></script>
+    <script
+      type="module"
+      src="/src/shared/components/all-products/all-products.page.component.ts"
+    ></script>
     <link rel="stylesheet" href="./src/index.css" />
     <style>
       html {
-        scrollbar-gutter: stable;
+        /* scrollbar-gutter: stable; */
       }
       @font-face {
         font-family: "Noto Sans Fallback";
@@ -33,20 +36,35 @@
         font-family: "Noto Sans", "Noto Sans Fallback", system-ui, -apple-system,
           BlinkMacSystemFont;
         --page-template-column: 1fr clamp(0px, 90vw, 1300px) 1fr;
+
         display: grid;
         grid-template-columns: var(--page-template-column);
-        min-height: 100vh;
-        min-height: 100dvh;
-        padding: 30px 0;
+        grid-auto-rows: 1fr;
+        height: 100vh;
+        height: 100dvh;
+        padding-top: 30px;
         align-items: center;
-        overflow-y: scroll;
+
         & > * {
           grid-column: 2 / 3;
         }
       }
+
+      sn-all-products {
+        display: block;
+        height: inherit;
+      }
+
+      .all-products-container {
+        height: 100%;
+        overflow-y: overlay;
+        padding-bottom: 10px;
+      }
     </style>
   </head>
   <body>
-    <sn-all-products></sn-all-products>
+    <div class="all-products-container">
+      <sn-all-products></sn-all-products>
+    </div>
   </body>
 </html>

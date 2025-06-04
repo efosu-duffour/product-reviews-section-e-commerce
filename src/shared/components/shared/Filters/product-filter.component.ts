@@ -83,7 +83,7 @@ export class SNProductFilter extends LitElement {
           }
         }
 
-        &[aria-label='close'] {
+        &[aria-label="close"] {
           padding: 0;
         }
 
@@ -137,7 +137,8 @@ export class SNProductFilter extends LitElement {
         }
       }
 
-      input:focus-visible  + .color-swatch, .color-swatch:hover {
+      input:focus-visible + .color-swatch,
+      .color-swatch:hover {
         outline-color: #959595;
         outline-width: 3px;
       }
@@ -214,14 +215,12 @@ export class SNProductFilter extends LitElement {
       }
 
       .ratings {
-
         sn-ratings-read-only {
           outline-style: solid;
           outline-width: 2px;
           outline-color: transparent;
           outline-offset: 2px;
-          border-radius: 10px; 
-          
+          border-radius: 10px;
 
           @media (prefers-reduced-motion: no-preference) {
             transition: all 200ms ease-in-out;
@@ -229,7 +228,6 @@ export class SNProductFilter extends LitElement {
         }
         label {
           display: flex;
-          
 
           &:has(input:checked)::after {
             opacity: 1;
@@ -476,7 +474,6 @@ export class SNProductFilter extends LitElement {
     this._dispatchFilterEvent();
   };
 
-  
   private _onRatingChanged = (event: InputEvent): void => {
     // Go through the checked input of the particular field and union their result
     // If the union is an empty set then get the original result
@@ -511,9 +508,14 @@ export class SNProductFilter extends LitElement {
       ]); // Performing Union
     }
 
+    filteredFieldProductIDs =
+      filteredFieldProductIDs.size === 0
+        ? new Set(this.globalFilteredProducts)
+        : filteredFieldProductIDs;
+
     this._ratingsFilteredProducts = [...filteredFieldProductIDs];
     this._dispatchFilterEvent();
-  }
+  };
 
   private _intersectFilters(arr1: ProductID[], arr2: ProductID[]): ProductID[] {
     const set = new Set(arr2);

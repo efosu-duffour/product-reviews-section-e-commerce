@@ -14,11 +14,13 @@ import {
 } from "../../../services/context";
 import "../shared/Filters/product-filter.component";
 import "./sort-by.component";
+import "../shared/Pagination/pagination.component";
 import { Task } from "@lit/task";
 import { SNProductFilter } from "../shared/Filters/product-filter.component";
 import { ReviewsService } from "../../../services/reviews.service";
 import { SNProductCard } from "../shared/Product/product-card.component";
 import { range } from "../../utils/range";
+import { SNPagination } from "../shared/Pagination/pagination.component";
 
 @customElement("sn-all-products")
 export class SNAllProducts extends LitElement {
@@ -32,7 +34,7 @@ export class SNAllProducts extends LitElement {
   private _productService = new ProductsService();
 
   @provide({ context: PaginationNumberContext })
-  private _paginationNumber: number = 8;
+  private _paginationNumber: number = 12;
 
   @provide({ context: ReviewsServiceContext })
   private _reviewService = new ReviewsService();
@@ -64,6 +66,12 @@ export class SNAllProducts extends LitElement {
 
   @query(".sn-product-list-container")
   private _snProductListContainer!: HTMLDivElement;
+
+  @query("sn-pagination")
+  private _snPaginationComponent!: SNPagination;
+
+  @state()
+  private _currentPageNumber: number = 1;
 
   private _task = new Task(this, {
     task: async () => {
@@ -98,11 +106,24 @@ export class SNAllProducts extends LitElement {
   private _onResize = (): void => {
     if (this.clientWidth < 820) {
       this._snProductFilterComponent.classList.add("docked");
+
+      if (this._snPaginationComponent)
+        this._snPaginationComponent.setAttribute("iconOnly", "");
     } else {
       this._closeDockedFilter();
       this._snProductFilterComponent.classList.remove("docked");
+
+      if (this._snPaginationComponent)
+        this._snPaginationComponent.removeAttribute("iconOnly");
     }
   };
+
+  private _updateCurrentPageNumber(event: CustomEvent): void {
+    this._currentPageNumber = event.detail.page;
+    this.updateComplete.then(() => {
+      this.scrollToTop();
+    })
+  }
 
   static styles = [
     SNProductFilter.productFilterSkeletonStyle,
@@ -112,9 +133,8 @@ export class SNAllProducts extends LitElement {
         container-name: all-product-container;
         container-type: inline-size;
         font-size: clamp(0.8rem, 3vw, 0.9rem);
-        overflow-y: hidden;
-        height: 100%;
       }
+
       * {
         padding: 0;
         margin: 0;
@@ -132,13 +152,15 @@ export class SNAllProducts extends LitElement {
         display: grid;
         grid-template-columns: 230px 1fr;
         column-gap: 20px;
-        padding: 10px;
+       
+        height: inherit;
       }
 
       aside {
         position: sticky;
         top: 0;
         
+
         user-select: none;
         scrollbar-gutter: stable;
 
@@ -152,16 +174,16 @@ export class SNAllProducts extends LitElement {
         }
 
         sn-product-filter {
-          height: 100%;
-        overflow-y: scroll;
-
+           position: sticky;
+           top: 0;
         }
       }
 
       main {
-        position: relative;
+       
         padding-inline: 10px;
-        
+        display: grid;
+        grid-template-rows: auto 1fr;
       }
 
       .nothing-found-container {
@@ -169,13 +191,10 @@ export class SNAllProducts extends LitElement {
         display: grid;
         align-items: center;
         justify-content: center;
+        align-self: center;
+
         row-gap: 15px;
         text-align: center;
-        position: absolute;
-        margin: auto;
-        inset: 0;
-        height: fit-content;
-        width: fit-content;
 
         svg {
           width: 20px;
@@ -243,7 +262,12 @@ export class SNAllProducts extends LitElement {
       .top-container {
         display: flex;
         align-items: center;
-        margin-bottom: 15px;
+        padding-bottom: 15px;
+        position: sticky;
+        top: 0px;
+        z-index: 1;
+        background-color: white;
+        will-change: transform;
       }
 
       button {
@@ -274,13 +298,70 @@ export class SNAllProducts extends LitElement {
       }
 
       .sn-product-list-container {
-        overflow-y: scroll;
         height: 100%;
         outline: none;
         padding: 20px 10px;
+
+        display: grid;
+        row-gap: 30px;
+        align-content: space-between
+      }
+
+      .quick-nav-container {
+        display: flex;
+        column-gap: 10px;
+        color: darkblue;
+        position: absolute;
+        margin-inline: auto;
+        left: 0;
+        right: 0;
+        top: -50px;
+        width: fit-content;
+        z-index: 1000;
+
+        box-shadow: 0px 3px 4px #2c2c2c1c;
+        padding: 0.3em 0.5em;
+        border-radius: 1000px;
+
+        @media (prefers-reduced-motion: no-preference) {
+          transition: top 200ms ease-in-out;
+        }
+
+        &:focus-within {
+          top: 10px;
+        }
+        a {
+          text-decoration: none;
+          text-transform: capitalize;
+          padding: 0.3em 1em;
+          border-radius: 1000px;
+          border-width: 2px;
+          border-color: darkblue;
+          border-style: solid;
+          outline: none;
+          color: darkblue;
+
+          &:focus-visible {
+            background-color: #e9faff;
+            border-color: #264b57;
+            color: #264b57;
+          }
+
+          &:visited {
+            color: inherit;
+          }
+
+          @media (prefers-reduced-motion: no-preference) {
+            transition: all 200ms ease-in-out;
+          }
+        }
       }
 
       @container all-product-container (max-width: 820px) {
+
+        .quick-nav-container {
+          display: none;  
+        }
         .container {
           grid-template-columns: 1fr;
         }
@@ -291,9 +372,6 @@ export class SNAllProducts extends LitElement {
           display: flex;
           align-items: center;
           column-gap: 5px;
-        }
-        .top-container {
-          margin-bottom: 25px;
         }
 
         .sn-product-list-container {
@@ -319,6 +397,7 @@ export class SNAllProducts extends LitElement {
           }
 
           sn-product-filter {
+           
             display: block;
             padding: 30px 20px;
             width: 250px;
@@ -339,7 +418,14 @@ export class SNAllProducts extends LitElement {
 
   private _onFilterChange = (event: CustomEvent): void => {
     this._filteredProductIDs = event.detail.filteredProductIDs;
+    this.updateComplete.then(() => {
+      this.scrollToTop();
+    })
   };
+
+  scrollToTop() {
+    this.parentElement?.scrollTo(0, 0)
+  }
 
   private _toggleDockedFilter(): void {
     if (this._asideFilter.classList.contains("show")) {
@@ -381,17 +467,60 @@ export class SNAllProducts extends LitElement {
     return this._task.render({
       complete: () => {
         return html`
+          <div class="quick-nav-container">
+            <a
+              href="#"
+              @click=${(e: MouseEvent) => {
+                e.preventDefault();
+                this._snProductFilterComponent.focus();
+              }}
+              >Skip to Filter</a
+            >
+            <a
+              href="#"
+              @click=${(e: MouseEvent) => {
+                e.preventDefault();
+                this._snProductListContainer.focus();
+              }}
+              >Skip to main</a
+            >
+          </div>
           <div
-            class="container"
+            class="container" 
             @close-docked-filter=${this._closeDockedFilter}
           >
             <aside id="filter-form">
               <sn-product-filter
+                tabindex="-1"
                 @filter-change=${this._onFilterChange}
                 .globalFilteredProducts=${this._originalProductIDs}
               ></sn-product-filter>
             </aside>
-            <main>
+            <main id="main">
+              <div class="top-container">
+                <button
+                  @click=${this._toggleDockedFilter}
+                  class="hide"
+                  type="button"
+                  filter
+                >
+                  <svg
+                    width="16"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M21 4V6H20L15 13.5V22H9V13.5L4 6H3V4H21ZM6.4037 6L11 12.8944V20H13V12.8944L17.5963 6H6.4037Z"
+                    ></path>
+                  </svg>
+                  Filter
+                </button>
+                <sn-sort-by
+                  @sort-change=${this._onSortChange}
+                  .sorts=${this._sortingPatterns}
+                ></sn-sort-by>
+              </div>
               ${this._filteredProductIDs.length === 0
                 ? html`
                     <div class="nothing-found-container">
@@ -419,36 +548,25 @@ export class SNAllProducts extends LitElement {
                       </button>
                     </div>
                   `
-                : html` <div class="top-container">
-                      <button
-                        @click=${this._toggleDockedFilter}
-                        class="hide"
-                        type="button"
-                        filter
-                      >
-                        <svg
-                          width="16"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 24 24"
-                          fill="currentColor"
-                        >
-                          <path
-                            d="M21 4V6H20L15 13.5V22H9V13.5L4 6H3V4H21ZM6.4037 6L11 12.8944V20H13V12.8944L17.5963 6H6.4037Z"
-                          ></path>
-                        </svg>
-                        Filter
-                      </button>
-                      <sn-sort-by
-                        @sort-change=${this._onSortChange}
-                        .sorts=${this._sortingPatterns}
-                      ></sn-sort-by>
-                    </div>
-                    <div class="sn-product-list-container">
+                : html`
+                    <div tabindex="-1" class="sn-product-list-container">
                       <sn-product-list
                         .currentSort=${this._currentSort}
-                        .product_ids=${this._filteredProductIDs}
+                        .product_ids=${this._filteredProductIDs.slice(
+                          (this._currentPageNumber - 1) *
+                            this._paginationNumber,
+                          this._currentPageNumber * this._paginationNumber
+                        )}
                       ></sn-product-list>
-                    </div>`}
+                      <div class="pagination-container">
+                        <sn-pagination
+                          @page-change=${this._updateCurrentPageNumber}
+                          numberOnEachPage=${this._paginationNumber}
+                          totalNumber=${this._filteredProductIDs.length}
+                        ></sn-pagination>
+                      </div>
+                    </div>
+                  `}
             </main>
           </div>
         `;
