@@ -253,4 +253,13 @@ export class ProductsService {
   getDateByID(productID: ProductID): Date {
     return ProductsService.getDateByID(this.products, productID);
   }
+
+  static getDescription(product: Product): Description {
+    return product.description;
+  }
+
+  static getName(product: Product): ProductName {
+    return product.name;
+  }
+
 }

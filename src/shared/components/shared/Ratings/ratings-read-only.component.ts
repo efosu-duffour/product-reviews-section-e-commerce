@@ -5,25 +5,33 @@ import { customElement, property } from "lit/decorators.js";
 export class SNRatingsReadOnly extends LitElement {
   static styles = [
     css`
-    .star-rating {
-      font-size: 23px;
-      color: #dadee9;
-      position: relative;
-      width: fit-content;
-     
-    } 
-    .star-rating::before {
-        content: "\u2605 \u2605 \u2605 \u2605 \u2605";
-        display: inline-block;
-        color: gold;
+      :host {
+        line-height: 1em;
+      }
+
+      .blue-stars,
+      .star-rating {
+        font-size: 23px;
+        
+        background-repeat: no-repeat;
+        background-clip: text;
+        color: transparent;
+      }
+
+      .star-rating {
         position: absolute;
         inset: 0;
-        width: var(--ratings-width, 0%);
-        white-space: nowrap;
-        overflow: hidden;
+        background-image: linear-gradient(45deg, gold);
+        background-size: var(--ratings-width, 0%);
       }
-    `
-  ]
+
+      .blue-stars {
+        position: relative;
+        background-image: linear-gradient(45deg, #dadee9);
+        background-size: 100%;
+      }
+    `,
+  ];
   @property({ type: Number })
   ratings = 4;
 
@@ -33,10 +41,15 @@ export class SNRatingsReadOnly extends LitElement {
 
   protected render(): unknown {
     return html`
-      <div
-        class="star-rating"
-        style="--ratings-width: ${this._ratingsToPercentage(this.ratings)}"
-      >&#9733; &#9733; &#9733; &#9733; &#9733;</div>
+      <div class="blue-stars">
+         &#9733; &#9733; &#9733; &#9733; &#9733;
+        <div
+          class="star-rating"
+          style="--ratings-width: ${this._ratingsToPercentage(this.ratings)}"
+        >
+          &#9733; &#9733; &#9733; &#9733; &#9733;
+        </div>
+      </div>
     `;
   }
 }

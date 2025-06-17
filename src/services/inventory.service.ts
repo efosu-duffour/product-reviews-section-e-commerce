@@ -271,5 +271,45 @@ export class InventoryService {
     return InventoryService.getHighestPriceByID(this.inventories, productID);
   }
 
+  static getSalePrice(inventories: Inventory[], size: Size): Price {
+   
+    if (size)
+      return (
+        inventories.find((inventory) => inventory.size == size)?.sale_price ??
+        0
+      );
+
+    return inventories[0].sale_price ?? 0;
+  }
+
+  static getListPrice(inventories: Inventory[], size: Size): Price {
+    if (size)
+      return (
+        inventories.find((inventory) => inventory.size == size)?.list_price ??
+        0
+      );
+
+    return inventories[0].list_price ?? 0;
+  }
+
+  static getDiscount(inventories: Inventory[], size: Size): DiscountPerct {
+    return (
+      inventories.find((inventory) => inventory.size == size)
+        ?.discount_percentage ?? 0
+    );
+  }
+
+  static getStock(
+    inventories: Inventory[],
+    size: Size,
+    color: ProductColor
+  ): Stock {
+    return (
+      inventories.find(
+        (inventory) => inventory.size == size && inventory.color === color
+      )?.stock ?? 0
+    );
+  }
+
   private static _INSTANCE: InventoryService | null = null;
 }

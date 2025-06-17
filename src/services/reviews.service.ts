@@ -88,5 +88,13 @@ export class ReviewsService {
     return ReviewsService.getIDsByRating(this.reviews, rating);
   }
 
+  static numberOfRatings(reviews: ProductReview[], productID: ProductID): number {
+    return reviews.filter(review => review.product_id === productID).length;
+  }
+
+  numberofRatings(productID: ProductID): number {
+    return ReviewsService.numberOfRatings(this.reviews, productID);
+  }
+
   private static _INSTANCE: ReviewsService | null = null;
 }

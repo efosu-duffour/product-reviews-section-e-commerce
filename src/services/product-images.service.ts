@@ -49,7 +49,7 @@ export class ProductImagesService {
       sessionStorage.setItem(SESSIONNAME, JSON.stringify(productsImages));
     }
 
-    return this._productsImages = productsImages;
+    return (this._productsImages = productsImages);
   }
 
   private async _fetchProductImages(): Promise<ProductImage[]> {
@@ -162,6 +162,15 @@ export class ProductImagesService {
       id,
       color
     );
+  }
+
+  static getImages(
+    productImages: ProductImage[],
+    color: ProductColor
+  ): ImageUrl[] {
+    return productImages
+      .filter((productImage) => productImage.color === color)
+      .map((filteredProductImage) => filteredProductImage.image_url);
   }
 
   private static _INSTANCE: ProductImagesService | null = null;

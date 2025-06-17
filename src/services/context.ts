@@ -3,6 +3,7 @@ import { ProductImage } from "./product-images.service";
 import { InventoryService } from "./inventory.service";
 import { ProductsService } from "./products.service";
 import { ReviewsService } from "./reviews.service";
+import { ProductInfoService } from "./product-info.service";
 
 export const productImageServiceContext = createContext<ProductImage>(
   Symbol("productImageService")
@@ -19,3 +20,4 @@ export const PaginationNumberContext = createContext<number>(
 export const ReviewsServiceContext = createContext<ReviewsService>(
   Symbol("reviewService")
 );
+export const ProductInfoServiceContext = createContext<ProductInfoService>(Symbol('productInfoService'));

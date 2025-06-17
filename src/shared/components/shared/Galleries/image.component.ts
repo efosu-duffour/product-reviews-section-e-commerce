@@ -6,17 +6,22 @@ import { customElement, property, query, queryAssignedElements } from "lit/decor
 export class SNImg extends LitElement {
   static styles = [
     css`
-      ::slotted(*) {
-        display: block;
-        width: 100%;
-        height: 100%;
-        will-change: opacity;
-        transition: opacity 500ms ease-in-out;
-        opacity: 0;
-      }
-      .img-background {
-        width: inherit;
-        aspect-ratio: inherit;
+    :host {
+      display: block;
+      width: 100%;
+      height: 100%;
+      aspect-ratio: inherit;
+    }
+    
+    ::slotted(img), ::slotted(picture) {
+      will-change: opacity;
+      transition: opacity 500ms ease-in-out;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+    }
+    .img-background {
+      height: 100%;
         position: relative;
         background-position: center;
         background-repeat: no-repeat;
