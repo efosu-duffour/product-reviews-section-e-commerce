@@ -65,7 +65,6 @@ export class SNRatingDashboard extends LitElement {
     const poor = this.overallRatings ? this.overallRatings.poor : 0;
     const good = this.overallRatings ? this.overallRatings.good : 0;
     const below_average = this.overallRatings ? this.overallRatings.below_average : 0;
-    console.log(excellent)
     return html`
       <div class="container" ?no-reviews=${!this.overallRatings}>
         <div class="rating">

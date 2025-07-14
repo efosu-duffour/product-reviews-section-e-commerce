@@ -11,7 +11,7 @@ export type ReviewUserProp = Omit<ProductReview, "product_id"> & User;
 export class SNUserReview extends LitElement {
   @property({ type: Object, attribute: false })
   review!: ReviewUserProp;
-  private _default_avatar = "";
+  private _default_avatar = "avatar-default.svg";
 
   static styles = [
     css`
