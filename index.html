@@ -10,7 +10,7 @@
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <script type="module" src="/src/shared/components/product-detail/product-detail-section.page.component.ts"></script>
+    <script type="module" src="/src/shared/components/shared/Reviews/product-review-section-page.component.ts"></script>
     <link rel="stylesheet" href="./src/index.css" />
     <style>
       html {
@@ -39,9 +39,11 @@
         grid-auto-rows: 1fr;
         padding: 30px 0px;
         align-items: center;
+        background-color: #545454;
 
         & > * {
           grid-column: 2 / 3;
+    
         }
       }
 
@@ -49,8 +51,8 @@
     </style>
   </head>
   <body>
-    <div class="product-detail-container">
-     <sn-product-detail-page></sn-product-detail-page>
+    <div class="product-reviews-container">
+     <sn-review-section-page></sn-review-section-page>
     </div>
   </body>
 </html>

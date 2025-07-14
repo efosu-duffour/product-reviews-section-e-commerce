@@ -5,10 +5,6 @@ import { customElement, property } from "lit/decorators.js";
 export class SNRatingsReadOnly extends LitElement {
   static styles = [
     css`
-      :host {
-        line-height: 1em;
-      }
-
       .blue-stars,
       .star-rating {
         font-size: 23px;
@@ -16,19 +12,23 @@ export class SNRatingsReadOnly extends LitElement {
         background-repeat: no-repeat;
         background-clip: text;
         color: transparent;
+        white-space: nowrap;
+        line-height: auto;
       }
 
       .star-rating {
         position: absolute;
         inset: 0;
         background-image: linear-gradient(45deg, gold);
-        background-size: var(--ratings-width, 0%);
+        width: var(--ratings-width, 0%);
       }
 
       .blue-stars {
         position: relative;
         background-image: linear-gradient(45deg, #dadee9);
         background-size: 100%;
+        width: fit-content;
+  
       }
     `,
   ];
@@ -40,6 +40,7 @@ export class SNRatingsReadOnly extends LitElement {
   }
 
   protected render(): unknown {
+   
     return html`
       <div class="blue-stars">
          &#9733; &#9733; &#9733; &#9733; &#9733;
