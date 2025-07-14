@@ -8,6 +8,23 @@ export type ProductReview = {
   created_at: string;
 };
 
+export type OverallReview = {
+  excellent: number;
+  good: number;
+  average: number;
+  below_average: number;
+  poor: number;
+  [s: string]: number;
+};
+
+export const overallRatingMapings: Record<keyof OverallReview, string> = {
+  average: 'average',
+  below_average: 'below average',
+  excellent: 'excellent',
+  good: 'good',
+  poor: 'poor',
+}
+
 const SESSIONNAME = "sn-reviews";
 export class ReviewsService {
   createdAt?: number;
@@ -75,11 +92,13 @@ export class ReviewsService {
   static getIDsByRating(reviews: ProductReview[], rating: number): ProductID[] {
     // Get the ids that has such ratings
 
-    const filteredIDs = reviews.filter(
-      (review) =>
-        rating ===
-        Math.round(this.getAverageRatingByID(reviews, review.product_id))
-    ).map(filteredReviews => filteredReviews.product_id);
+    const filteredIDs = reviews
+      .filter(
+        (review) =>
+          rating ===
+          Math.round(this.getAverageRatingByID(reviews, review.product_id))
+      )
+      .map((filteredReviews) => filteredReviews.product_id);
 
     return filteredIDs;
   }
@@ -88,12 +107,64 @@ export class ReviewsService {
     return ReviewsService.getIDsByRating(this.reviews, rating);
   }
 
-  static numberOfRatings(reviews: ProductReview[], productID: ProductID): number {
-    return reviews.filter(review => review.product_id === productID).length;
+  static numberOfRatings(
+    reviews: ProductReview[],
+    productID: ProductID
+  ): number {
+    return reviews.filter((review) => review.product_id === productID).length;
   }
 
   numberofRatings(productID: ProductID): number {
     return ReviewsService.numberOfRatings(this.reviews, productID);
+  }
+
+  static getAllReviewsByID(
+    reviews: ProductReview[],
+    productID: ProductID
+  ): ProductReview[] {
+    return reviews.filter((review) => review.product_id === productID);
+  }
+
+  getAllReviewsByID(productID: ProductID): ProductReview[] | undefined {
+    return ReviewsService.getAllReviewsByID(this.reviews, productID);
+  }
+
+  static getOverallRatings(
+    reviews: ProductReview[],
+    productID: ProductID
+  ): OverallReview | undefined {
+    let overallRatings = new Array(5).fill(0);
+    const filteredReviews = reviews.filter(
+      (review) => review.product_id === productID
+    );
+
+    if (filteredReviews.length === 0) {
+      return undefined;
+    }
+
+    filteredReviews.forEach((review) => {
+      const truncRatings = review.rating;
+      overallRatings[truncRatings - 1]++;
+    });
+
+    
+    
+    const sum = overallRatings.reduce((prev, curr) => prev + curr, 0)
+    overallRatings = overallRatings.map(
+      (rating) => rating / sum 
+    );
+    
+    return {
+      poor: overallRatings[0],
+      below_average: overallRatings[1],
+      average: overallRatings[2],
+      good: overallRatings[3],
+      excellent: overallRatings[4],
+    }
+  }
+
+  getOverallRatings(productID: ProductID): OverallReview | undefined {
+    return ReviewsService.getOverallRatings(this.reviews, productID);
   }
 
   private static _INSTANCE: ReviewsService | null = null;
