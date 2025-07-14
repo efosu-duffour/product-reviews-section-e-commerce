@@ -272,6 +272,7 @@ export class InventoryService {
   }
 
   static getSalePrice(inventories: Inventory[], size: Size): Price {
+    if (inventories.length === 0) return 0;
    
     if (size)
       return (
@@ -283,6 +284,7 @@ export class InventoryService {
   }
 
   static getListPrice(inventories: Inventory[], size: Size): Price {
+    if (inventories.length === 0) return 0;
     if (size)
       return (
         inventories.find((inventory) => inventory.size == size)?.list_price ??

@@ -33,7 +33,7 @@ export class SNProductDetailPage extends LitElement {
   @provide({ context: ProductInfoServiceContext })
   private _productInfoService = new ProductInfoService();
 
-  private _selectedProductID: ProductID = "harvest-cozy-turtleneck";
+  private _selectedProductID: ProductID = "voyager-hoodie";
 
   private _task = new Task(this, {
     task: async () => {
